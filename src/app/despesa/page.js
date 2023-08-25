@@ -16,7 +16,7 @@ export default async function Home() {
       <NavBar active={"despesa"} />
 
       <main className="bg-slate-900 m-20 p-12 rounded-xl">
-        <h2 className="text-2xl font-bold">DEspesas</h2>
+        <h2 className="text-2xl font-bold">Despesas</h2>
 
         <div id="data" className="text-slate-300 m-1">
           {data.map(despesa => <DataRow despesa={despesa} /> )}
