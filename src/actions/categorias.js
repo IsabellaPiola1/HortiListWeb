@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache"
 
-export async function create(formData) {
-    const url = "http://localhost:8080/api/categorias"
+const url = process.env.NEXT_PUBLIC_BASE_URL + "/categorias"
 
+export async function create(formData) {
     const options = {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -22,4 +22,51 @@ export async function create(formData) {
     revalidatePath("/categorias")
     return {ok: "success"}
     
+}
+
+export async function getCategorias(){
+    const resp = await fetch(url, { next: { revalidate: 3600 } })
+    if (!resp.ok) throw new Error("Não pode carregar os dados")
+    return resp.json()
+}
+
+export async function destroy(id){  
+    const deleteUrl = url + "/" + id
+
+    const options = {
+        method: "DELETE"
+    }
+
+    const resp = await fetch(deleteUrl, options)
+
+    if (resp.status !== 204) return {error: "Erro ao apagar categoria. " + resp.status}
+
+    revalidatePath("/categorias")
+
+}
+
+export async function update(categorias){
+    const updateURL = url + "/" + categorias.id
+
+    const options = {
+        method: "PUT",
+        body: JSON.stringify(categorias),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    const resp = await fetch(updateURL, options)
+
+    if (resp.status !== 200) return {error: "Erro ao atualizar conta. " + resp.status}
+
+    revalidatePath("/")
+}
+
+export async function getConta(id){
+    const getUrl = url + "/" + id
+    const resp = await fetch(getUrl)
+    if (resp.status !== 200) return {error: "Erro ao buscar dados da categoria. " + resp.status}
+    const json = await resp.json()
+    return json
 }
