@@ -28,7 +28,7 @@ export async function create(formData) {
     
 }
 
-export async function getContas(){
+export async function getMetas(){
     const token = cookies().get("hortilist_token")
     const options = {
         method: "GET",
